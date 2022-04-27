@@ -39,9 +39,11 @@ sidebar = html.Div(
 		dbc.Nav(
 			[
 				dbc.NavLink("Histogramme", href="/", active="exact"),
-                dbc.NavLink("Dispersion", href="/scatter-plot", active="exact"),
-                dbc.NavLink("Diagramme en rayons de soleil", href="/sunburst-chart", active="exact"),
+                		dbc.NavLink("Dispersion", href="/scatter-plot", active="exact"),
+                		dbc.NavLink("Diagramme en rayons de soleil", href="/sunburst-chart", active="exact"),
 				dbc.NavLink("Tableur", href="/table", active="exact"),
+				dbc.NavLink("Pie-chart", href="/pie", active="exact"),
+				dbc.NavLink("Graphique", href="/graph", active="exact"),
 			],
 			vertical=True,
 			pills=True,
@@ -86,7 +88,7 @@ def render_page_content(pathname):
                 graph
             ])
         ]
-
+	
 	elif pathname == "/sunburst-chart":
 		graph = view.GUI.init_graph_sunburst() # on initialise le graph
 		return [ # on renvoie un code html qui affiche le titre de la page, une
@@ -107,6 +109,33 @@ def render_page_content(pathname):
 				html.Hr(style={'width': '75%', 'align': 'center'}),
 				html.Div(id='data_table', children = view.GUI.data_table(model.data.df))
 				]
+
+    	elif pathname == "/pie":
+        	# fetch client info"
+        	dropdown = view.GUI.build_dropdown_menu(model.data.get_unique_values()) #on appelle le dropdown
+        	graph = view.GUI.init_graph2() #on appelle le graph
+        	return [
+            		html.H1('Relation entre la masse et les stations', id='pie_view',
+                    		style={'textAlign':'left'}),
+            		html.Hr(style={'width': '75%', 'align': 'center'}),
+            		html.Div([
+                		dropdown, graph #on fait apparaître le dropdown et le graphe dans cet ordre
+                		])
+            		]
+
+	
+    	elif pathname == "/graph":
+        	#fetch clinet info
+        	dropdown = view.GUI.build_dropdown_menu(model.data.get_unique_values()) #on appelle le dropdown
+        	graph = view.GUI.init_graph3() #on appelle le graph
+        	return [
+            		html.H1('Relation entre la masse et le nombre des glands', id='scatter_view',
+                    		style={'textAlign':'left'}),
+            		html.Hr(style={'width': '75%', 'align': 'center'}),
+            		html.Div([
+                		dropdown, graph #on fait apparaître le dropdown et le graphe dans cet ordre
+                		])            
+            		]
 
 	else:
 		return html.Div(
@@ -149,6 +178,21 @@ def update__sunburst_chart(pathname):
     # la fonction récupère la variable "pathname" du callback et met à jour la figure
     sub_df, attributes = model.data.extract_df_sunburst() # on extrait les données
     return view.GUI.build_figure_sunburst(sub_df, attributes)
+
+@app.callback(
+    Output("pie-chart", "figure"),
+    [Input("dropdown", "value")])
+def update_pie_chart(value):
+    sub_df, attributes = model.data.extract_df_pie(value)
+    return view.GUI.build_figure2(sub_df, attributes) #selon ce qu'on choisi via le dropdown, on change les données
+
+@app.callback(
+    Output("scatter-chart", "figure"),
+    [Input("dropdown", "value")])
+def update_scatter_chart(value):
+    sub_df, attributes = model.data.extract_df_scatter(value)
+    return view.GUI.build_figure3(sub_df, attributes) #selon ce qu'on choisi via le dropdown, on change les données
+
 
 
 if __name__=='__main__':
