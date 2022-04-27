@@ -108,33 +108,33 @@ def render_page_content(pathname):
 				html.Div(id='data_table', children = view.GUI.data_table(model.data.df))
 				]
     
-    elif pathname == "/pie":
-        # fetch client info"
-        dropdown = view.GUI.build_dropdown_menu(model.data.get_unique_values()) #on appelle le dropdown
-        graph = view.GUI.init_graph2() #on appelle le graph
-        return [
-                html.H1('Relation entre la masse et les stations', id='pie_view',
-                        style={'textAlign':'left'}),
-                html.Hr(style={'width': '75%', 'align': 'center'}),
-                html.Div([
-                    dropdown, graph #on fait apparaître le dropdown et le graphe dans cet ordre
-                        ])
-                ]   
+	elif pathname == "/pie":
+		# fetch client info"
+		dropdown = view.GUI.build_dropdown_menu(model.data.get_unique_values()) #on appelle le dropdown
+		graph = view.GUI.init_graph2() #on appelle le graph
+		return [
+				html.H1('Relation entre la masse et les stations', id='pie_view',
+						style={'textAlign':'left'}),
+				html.Hr(style={'width': '75%', 'align': 'center'}),
+				html.Div([
+				dropdown, graph #on fait apparaître le dropdown et le graphe dans cet ordre
+					])
+				]
     
-    elif pathname == "/graph":
-        #fetch clinet info
-        dropdown = view.GUI.build_dropdown_menu(model.data.get_unique_values()) #on appelle le dropdown
-        graph = view.GUI.init_graph3() #on appelle le graph
-        return [
-                html.H1('Relation entre la masse et le nombre des glands', id='scatter_view',
-                        style={'textAlign':'left'}),
-                html.Hr(style={'width': '75%', 'align': 'center'}),
-                html.Div([
-                    dropdown, graph #on fait apparaître le dropdown et le graphe dans cet ordre
-                        ])            
-                ]
+	elif pathname == "/graph":
+		#fetch clinet info
+		dropdown = view.GUI.build_dropdown_menu(model.data.get_unique_values()) #on appelle le dropdown
+		graph = view.GUI.init_graph3() #on appelle le graphe
+		return [
+				html.H1('Relation entre la masse et le nombre des glands', id='scatter_view',
+						style={'textAlign':'left'}),
+				html.Hr(style={'width': '75%', 'align': 'center'}),
+				html.Div([
+				dropdown, graph #on fait apparaître le dropdown et le graphe dans cet ordre
+					])
+				]
             
- 	else:
+	else:
 		return html.Div(
 			[
 				html.H1("404: Not found", className="text-danger"),
@@ -193,3 +193,5 @@ def update_scatter_chart(value):
 
 if __name__=='__main__':
 	app.run_server(debug=True)
+
+               
