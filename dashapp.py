@@ -1,15 +1,13 @@
 import model.data
 import view.GUI
 
-from flask import Flask
 import dash
 from dash import html
 from dash import dcc
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 
-server = Flask(__name__)
-app = dash.Dash(__name__, server = server, suppress_callback_exceptions=True, external_stylesheets=[dbc.themes.SKETCHY])
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.SKETCHY])
 
 # styling the sidebar
 SIDEBAR_STYLE = {
@@ -39,11 +37,11 @@ sidebar = html.Div(
 		dbc.Nav(
 			[
 				dbc.NavLink("Histogramme", href="/", active="exact"),
-                		dbc.NavLink("Dispersion", href="/scatter-plot", active="exact"),
-                		dbc.NavLink("Diagramme en rayons de soleil", href="/sunburst-chart", active="exact"),
+                dbc.NavLink("Dispersion", href="/scatter-plot", active="exact"),
+                dbc.NavLink("Diagramme en rayons de soleil", href="/sunburst-chart", active="exact"),
+                dbc.NavLink("Pie-chart", href="/pie", active="exact"),
+                dbc.NavLink("Graphique", href="/graph", active="exact"),
 				dbc.NavLink("Tableur", href="/table", active="exact"),
-				dbc.NavLink("Pie-chart", href="/pie", active="exact"),
-				dbc.NavLink("Graphique", href="/graph", active="exact"),
 			],
 			vertical=True,
 			pills=True,
@@ -76,7 +74,7 @@ def render_page_content(pathname):
 				dropdown, graph
 			])
 		]
-
+    
 	elif pathname == "/scatter-plot":
 		graph = view.GUI.init_graph_scatter() # on initialise le graph
 		return [ # on renvoie un code html qui affiche le titre de la page, une
@@ -88,7 +86,7 @@ def render_page_content(pathname):
                 graph
             ])
         ]
-	
+
 	elif pathname == "/sunburst-chart":
 		graph = view.GUI.init_graph_sunburst() # on initialise le graph
 		return [ # on renvoie un code html qui affiche le titre de la page, une
@@ -109,35 +107,34 @@ def render_page_content(pathname):
 				html.Hr(style={'width': '75%', 'align': 'center'}),
 				html.Div(id='data_table', children = view.GUI.data_table(model.data.df))
 				]
-
-    	elif pathname == "/pie":
-        	# fetch client info"
-        	dropdown = view.GUI.build_dropdown_menu(model.data.get_unique_values()) #on appelle le dropdown
-        	graph = view.GUI.init_graph2() #on appelle le graph
-        	return [
-            		html.H1('Relation entre la masse et les stations', id='pie_view',
-                    		style={'textAlign':'left'}),
-            		html.Hr(style={'width': '75%', 'align': 'center'}),
-            		html.Div([
-                		dropdown, graph #on fait apparaître le dropdown et le graphe dans cet ordre
-                		])
-            		]
-
-	
-    	elif pathname == "/graph":
-        	#fetch clinet info
-        	dropdown = view.GUI.build_dropdown_menu(model.data.get_unique_values()) #on appelle le dropdown
-        	graph = view.GUI.init_graph3() #on appelle le graph
-        	return [
-            		html.H1('Relation entre la masse et le nombre des glands', id='scatter_view',
-                    		style={'textAlign':'left'}),
-            		html.Hr(style={'width': '75%', 'align': 'center'}),
-            		html.Div([
-                		dropdown, graph #on fait apparaître le dropdown et le graphe dans cet ordre
-                		])            
-            		]
-
-	else:
+    
+    elif pathname == "/pie":
+        # fetch client info"
+        dropdown = view.GUI.build_dropdown_menu(model.data.get_unique_values()) #on appelle le dropdown
+        graph = view.GUI.init_graph2() #on appelle le graph
+        return [
+                html.H1('Relation entre la masse et les stations', id='pie_view',
+                        style={'textAlign':'left'}),
+                html.Hr(style={'width': '75%', 'align': 'center'}),
+                html.Div([
+                    dropdown, graph #on fait apparaître le dropdown et le graphe dans cet ordre
+                        ])
+                ]   
+    
+    elif pathname == "/graph":
+        #fetch clinet info
+        dropdown = view.GUI.build_dropdown_menu(model.data.get_unique_values()) #on appelle le dropdown
+        graph = view.GUI.init_graph3() #on appelle le graph
+        return [
+                html.H1('Relation entre la masse et le nombre des glands', id='scatter_view',
+                        style={'textAlign':'left'}),
+                html.Hr(style={'width': '75%', 'align': 'center'}),
+                html.Div([
+                    dropdown, graph #on fait apparaître le dropdown et le graphe dans cet ordre
+                        ])            
+                ]
+            
+ 	else:
 		return html.Div(
 			[
 				html.H1("404: Not found", className="text-danger"),
@@ -192,7 +189,6 @@ def update_pie_chart(value):
 def update_scatter_chart(value):
     sub_df, attributes = model.data.extract_df_scatter(value)
     return view.GUI.build_figure3(sub_df, attributes) #selon ce qu'on choisi via le dropdown, on change les données
-
 
 
 if __name__=='__main__':
