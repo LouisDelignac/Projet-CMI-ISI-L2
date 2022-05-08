@@ -60,10 +60,6 @@ cur.execute('''
 ''')
 
 
-data = pd.read_csv('data.csv', sep=';') 
-data.to_sql('ReproData', con, if_exists='replace', index=False)
-
-
 def addData(table, dataList):
     with open('data.csv', 'r') as csvfile:
         reader = csv.DictReader(csvfile, delimiter=';')
@@ -80,9 +76,6 @@ def addData(table, dataList):
             if result.fetchone() == None:
                 r = row[dataList]
                 r.to_sql(table, con, if_exists='append', index=False)
-
-
-
 
 
 valleyList = ['Valley']
