@@ -1,6 +1,7 @@
 import model.data
 import view.GUI
 
+from flask import Flask
 import dash
 from dash import html
 from dash import dcc
