@@ -7,7 +7,8 @@ from dash import dcc
 import dash_bootstrap_components as dbc
 from dash.dependencies import Input, Output
 
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.SKETCHY])
+server = Flask(name)
+app = dash.Dash(name, server = server, suppress_callback_exceptions=True, external_stylesheets=[dbc.themes.SKETCHY])
 
 # styling the sidebar
 SIDEBAR_STYLE = {
