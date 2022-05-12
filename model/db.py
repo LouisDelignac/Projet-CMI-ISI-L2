@@ -10,7 +10,7 @@ cur = con.cursor()
 cur.execute('''
     CREATE TABLE IF NOT EXISTS Valley (
     ID INTEGER PRIMARY KEY AUTOINCREMENT,
-    Name TEXT NOT NULL UNIQUE
+    Valley TEXT NOT NULL UNIQUE
     );
 ''')
 
@@ -60,22 +60,14 @@ cur.execute('''
 ''')
 
 
+data = pd.read_csv('data.csv', sep=';') 
+data.to_sql('ReproData', con, if_exists='replace', index=False)
+
+
 def addData(table, dataList):
-    with open('data.csv', 'r') as csvfile:
-        reader = csv.DictReader(csvfile, delimiter=';')
-        for row in reader:
-            if table == 'Valley' :
-                query = 'SELECT (id) INTO Valley WHERE nom="{}"'.format(row['Valley'])
-            elif table == 'Station' :
-                query = 'SELECT (id) INTO Station WHERE nom="{}"'.format(row['Station'])
-            elif table == 'Tree' :
-                query = 'SELECT (id) INTO Tree WHERE nom="{}"'.format(row['Tree'])
-            else :
-                query = 'SELECT (id) INTO Harvest WHERE nom="{}"'.format(row['Harvest'])
-            result = cur.execute(query)
-            if result.fetchone() == None:
-                r = row[dataList]
-                r.to_sql(table, con, if_exists='append', index=False)
+    if table == 'Valley':
+        query = "INSERT OR IGNORE INTO Valley (Valley) SELECT DISTINCT 'Valley' FROM ReproData"
+        cur.execute(query)
 
 
 valleyList = ['Valley']
@@ -85,6 +77,6 @@ harvestList = ['ID', 'harv_num', 'DD', 'harv', 'Year', 'Date', 'Mtot', 'Ntot', '
 
 
 addData('Valley', valleyList)
-addData('Station', stationList)
-addData('Tree', treeList)
-addData('Harvest', harvestList)
+#addData('Station', stationList)
+#addData('Tree', treeList)
+#addData('Harvest', harvestList)
