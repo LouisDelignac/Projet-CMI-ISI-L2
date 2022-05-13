@@ -10,17 +10,17 @@ cur = con.cursor()
 cur.execute('''
     CREATE TABLE IF NOT EXISTS Valley (
     ID INTEGER PRIMARY KEY AUTOINCREMENT,
-    Valley TEXT NOT NULL UNIQUE
+    Valley TEXT NOT NULL
     );
 ''')
 
 cur.execute('''
     CREATE TABLE IF NOT EXISTS Station (
     ID INTEGER PRIMARY KEY AUTOINCREMENT,
-    Name TEXT NOT NULL UNIQUE,
-    ValleyID INT NOT NULL,
+    Station TEXT NOT NULL,
     Range INTEGER,
     Altitude INTEGER,
+    ValleyID INT NOT NULL,
     FOREIGN KEY (ValleyID) REFERENCES Valley(ID)
     );
 ''')
@@ -28,11 +28,11 @@ cur.execute('''
 cur.execute('''
     CREATE TABLE IF NOT EXISTS Tree (
     ID INTEGER PRIMARY KEY AUTOINCREMENT,
-    code TEXT NOT NULL UNIQUE,
-    StationID INT NOT NULL,
+    code TEXT NOT NULL,
     VH REAL,
     H REAL,
     SH REAL,
+    StationID INT NOT NULL,
     FOREIGN KEY (StationID) REFERENCES Station(ID)
     );
 ''')
@@ -41,7 +41,6 @@ cur.execute('''
     CREATE TABLE IF NOT EXISTS Harvest (
     ID INTEGER PRIMARY KEY AUTOINCREMENT,
     HarvestID TEXT NOT NULL,
-    TreeID INTEGER NOT NULL,
     harv_num REAL,
     DD REAL,
     harv REAL,
@@ -55,19 +54,23 @@ cur.execute('''
     M_Germ REAL,
     N_Germ REAL,
     rate_Germ REAL,
+    TreeID INTEGER NOT NULL,
     FOREIGN KEY (TreeID) REFERENCES Tree(ID)
     );
 ''')
 
 
-data = pd.read_csv('data.csv', sep=';') 
-data.to_sql('ReproData', con, if_exists='replace', index=False)
-
-
 def addData(table, dataList):
-    if table == 'Valley':
-        query = "INSERT OR IGNORE INTO Valley (Valley) SELECT DISTINCT 'Valley' FROM ReproData"
-        cur.execute(query)
+    with open('data.csv', 'r') as csvfile:
+        reader = csv.DictReader(csvfile, delimiter=';')
+        for row in reader:
+            query = 'SELECT (ID) FROM ' + table + ' WHERE ' + dataList[0] + '="{}";'.format(row[table])
+            print(query)
+            result = cur.execute(query)
+            if result.fetchone() == None:
+                for column in dataList:
+                    query = 'INSERT INTO ' + table + ' (' + column + ') VALUES (?);'
+                    cur.execute(query, (row[column], ))
 
 
 valleyList = ['Valley']
@@ -80,3 +83,7 @@ addData('Valley', valleyList)
 #addData('Station', stationList)
 #addData('Tree', treeList)
 #addData('Harvest', harvestList)
+
+
+con.commit()
+con.close()
