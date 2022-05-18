@@ -64,8 +64,8 @@ cur.execute('''
 def addData(table, dataList, foreignKey = 'None'):
     """
     This function will fill the table passed in parameter from the data of a csv file.
-    - the datalist indicates which columns to select in the csv file
-    - the foreign key is optional
+    - the "dataList" argument indicates which columns to select in the csv file
+    - the "foreignKey" argument is optional
     """
     with open('model/data.csv', 'r') as csvfile:
         reader = csv.DictReader(csvfile, delimiter=';')
