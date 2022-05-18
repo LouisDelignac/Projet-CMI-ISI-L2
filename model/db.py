@@ -39,8 +39,8 @@ cur.execute('''
 
 cur.execute('''
     CREATE TABLE IF NOT EXISTS Harvest (
-    ID INTEGER PRIMARY KEY AUTOINCREMENT,
-    HarvestID TEXT NOT NULL,
+    HarvestID INTEGER PRIMARY KEY AUTOINCREMENT,
+    ID TEXT NOT NULL,
     harv_num REAL,
     DD REAL,
     harv REAL,
@@ -107,7 +107,7 @@ harvestList = ['ID', 'harv_num', 'DD', 'harv', 'Year', 'Date', 'Mtot', 'Ntot', '
 addData('Valley', valleyList)
 addData('Station', stationList)
 addData('Tree', treeList)
-#addData('Harvest', harvestList)
+addData('Harvest', harvestList)
 
 
 con.commit()
