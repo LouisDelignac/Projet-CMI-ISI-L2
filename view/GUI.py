@@ -41,7 +41,7 @@ def init_graph2():
 def build_figure2(df, attributes):
     x, y, z = attributes
     
-    fig = px.sunburst(df, path=[z, y], values=x) #le path équivaut au section dans le pie chart
+    fig = px.sunburst(df, path=[z, y], values=x, width=500) #le path équivaut au section dans le pie chart
     
     return fig
 
@@ -51,7 +51,7 @@ def init_graph3():
 def build_figure3(df, attributes):
     y, z, t = attributes
     
-    fig = px.scatter(df, x=y, y=t, size=y, color=z, log_x=True, size_max=55) #la couleur permet de distinguer les différentes stations
+    fig = px.scatter(df, x=y, y=t, size=y, color=z, log_x=True, size_max=55, width=700) #la couleur permet de distinguer les différentes stations
             #on peut intéragir en appuyant sur les noms des stations, l'échelle change selon les données qui restent
     return fig
 
