@@ -1,13 +1,6 @@
 import pandas as pd
 
-import sys
-
-# add your project directory to the sys.path
-project_home = '/home/LouisDelignac/mysite'
-if project_home not in sys.path:
-    sys.path = [project_home] + sys.path
-
-df = pd.read_csv(project_home+'/model/Repro_IS.csv', sep=';')
+df = pd.read_csv('model/data.csv', sep=';')
 select_column = 'Valley'
 
 
