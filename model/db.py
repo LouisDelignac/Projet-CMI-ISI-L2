@@ -17,10 +17,10 @@ cur.execute('''
 cur.execute('''
     CREATE TABLE IF NOT EXISTS Station (
     ID INTEGER PRIMARY KEY AUTOINCREMENT,
-    Station TEXT NOT NULL,
+    Station TEXT,
     Range INTEGER,
     Altitude INTEGER,
-    ValleyID INT NOT NULL,
+    ValleyID INT,
     FOREIGN KEY (ValleyID) REFERENCES Valley(ID)
     );
 ''')
@@ -65,12 +65,17 @@ def addData(table, dataList):
         reader = csv.DictReader(csvfile, delimiter=';')
         for row in reader:
             query = 'SELECT (ID) FROM ' + table + ' WHERE ' + dataList[0] + '="{}";'.format(row[table])
-            print(query)
             result = cur.execute(query)
             if result.fetchone() == None:
                 for column in dataList:
                     query = 'INSERT INTO ' + table + ' (' + column + ') VALUES (?);'
                     cur.execute(query, (row[column], ))
+                if table == 'Station':
+                    query = 'SELECT ID FROM Valley WHERE Valley = "{}"'.format(row['Valley'])
+                    test = cur.execute(query)
+                    test2 = test.fetchone()
+                    query = 'INSERT INTO Station (ValleyID) VALUES ({});'.format(test2[0])
+                    cur.execute(query)
 
 
 valleyList = ['Valley']
@@ -80,7 +85,7 @@ harvestList = ['ID', 'harv_num', 'DD', 'harv', 'Year', 'Date', 'Mtot', 'Ntot', '
 
 
 addData('Valley', valleyList)
-#addData('Station', stationList)
+addData('Station', stationList)
 #addData('Tree', treeList)
 #addData('Harvest', harvestList)
 
