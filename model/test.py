@@ -7,7 +7,7 @@ import pandas as pd
 
 
 df = pd.read_csv('model/data.csv', sep=';')
-#dff = df[['Station', 'Year', 'Ntot', 'Mtot']]
+dff = df[['Station', 'Year', 'Ntot', 'Mtot']]
 #df_agreg = dff[['Station', 'Year', 'Ntot', 'Mtot']].groupby(by=['Station', 'Year']).sum()
 #print(df_agreg)
 
@@ -41,9 +41,11 @@ app.layout = html.Div([
     Output(component_id='my-graph', component_property='figure'),
     Input(component_id='dpdn2', component_property='value'),
 )
-def update_graph(country_chosen):
-    dff2 = df[df.Station.isin(country_chosen)]
-    fig = px.line(data_frame=dff2, x='Year', y='Ntot', color='Station',
+def update_graph(station_chosen):
+    dff3 = df[['Station', 'Year', 'Ntot', 'Mtot']].groupby(by=['Station', 'Year']).sum()
+    dff3 = df[df.Station.isin(station_chosen)]
+    print(dff3)
+    fig = px.line(data_frame=dff3, x='Year', y='Ntot', color='Station',
                   custom_data=['Station', 'Mtot', 'oneacorn', 'Altitude'])
     fig.update_traces(mode='lines+markers')
     return fig
@@ -57,24 +59,24 @@ def update_graph(country_chosen):
     Input(component_id='my-graph', component_property='selectedData'),
     Input(component_id='dpdn2', component_property='value')
 )
-def update_side_graph(hov_data, clk_data, slct_data, country_chosen):
+def update_side_graph(hov_data, clk_data, slct_data, station_chosen):
     if hov_data is None:
-        dff3 = df[df.Station.isin(country_chosen)]
+        dff3 = df[df.Station.isin(station_chosen)]
         print(dff3)
         dff3 = dff3[dff3.Station == 2011]
         print(dff3)
-        fig2 = px.pie(data_frame=dff3, values='Mtot', names='Station',
-                      title='Population for 2011')
+        fig2 = px.pie(data_frame=dff3, values='Ntot', names='Station',
+                      title='Ntot for 2011')
         return fig2
     else:
         #print(f'hover data: {hov_data}')
         # print(hov_data['points'][0]['customdata'][0])
         # print(f'click data: {clk_data}')
         # print(f'selected data: {slct_data}')
-        dff3 = df[df.Station.isin(country_chosen)]
+        dff3 = df[df.Station.isin(station_chosen)]
         hov_year = hov_data['points'][0]['x']
         dff3 = dff3[dff3.Year == hov_year]
-        fig2 = px.pie(data_frame=dff3, values='Mtot', names='Station', title=f'Population for: {hov_year}')
+        fig2 = px.pie(data_frame=dff3, values='Ntot', names='Station', title=f'Ntot for: {hov_year}')
         return fig2
 
 
