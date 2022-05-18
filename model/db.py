@@ -60,40 +60,37 @@ cur.execute('''
 ''')
 
 
-def addData(table, dataList):
+
+def addData(table, dataList, foreignKey = 'None'):
+    """
+    This function will fill the table passed in parameter from the data of a csv file.
+    - the datalist indicates which columns to select in the csv file
+    - the foreign key is optional
+    """
     with open('data.csv', 'r') as csvfile:
         reader = csv.DictReader(csvfile, delimiter=';')
+
         for row in reader:
             query = 'SELECT (ID) FROM ' + table + ' WHERE ' + dataList[0] + '="{}";'.format(row[dataList[0]])
             result = cur.execute(query)
+
             if result.fetchone() == None:
                 newElement = []
-                ratio = ''
+                columnElement = ''
                 for column in dataList:
                     newElement.append(row[column])
-                    ratio = ratio + column
+                    columnElement = columnElement + column
                     if column != dataList[-1]:
-                        ratio = ratio + ','
-                if table == 'Station':
-                    query = 'SELECT ID FROM Valley WHERE Valley = "{}"'.format(row['Valley'])
-                    test = cur.execute(query)
-                    test2 = test.fetchone()
-                    newElement.append(test2[0])
-                    ratio = ratio + ',ValleyID'
-                elif table == 'Tree':
-                    query = 'SELECT ID FROM Station WHERE Station = "{}"'.format(row['Station'])
-                    test = cur.execute(query)
-                    test2 = test.fetchone()
-                    newElement.append(test2[0])
-                    ratio = ratio + ',StationID'
-                elif table == 'Harvest':
-                    query = 'SELECT ID FROM Tree WHERE code = "{}"'.format(row['code'])
-                    test = cur.execute(query)
-                    test2 = test.fetchone()
-                    newElement.append(test2[0])
-                    ratio = ratio + ',TreeID'
-                interro = '?,' * (len(newElement)-1) + '?'
-                query = 'INSERT INTO ' + table + ' (' + ratio + ') VALUES (' + interro + ');'
+                        columnElement = columnElement + ','
+                
+                if foreignKey != 'None':
+                    query = 'SELECT ID FROM ' + foreignKey[0] + ' WHERE ' + foreignKey[1] + ' = "{}"'.format(row[foreignKey[1]])
+                    fkID = cur.execute(query)
+                    newElement.append(fkID.fetchone()[0])
+                    columnElement = columnElement + ',' + foreignKey[0] + 'ID'      
+                 
+                qMark = '?,' * (len(newElement)-1) + '?'
+                query = 'INSERT INTO ' + table + ' (' + columnElement + ') VALUES (' + qMark + ');'
                 cur.execute(query, newElement)
                 
 
@@ -105,9 +102,9 @@ harvestList = ['ID', 'harv_num', 'DD', 'harv', 'Year', 'Date', 'Mtot', 'Ntot', '
 
 
 addData('Valley', valleyList)
-addData('Station', stationList)
-addData('Tree', treeList)
-addData('Harvest', harvestList)
+addData('Station', stationList, ('Valley', 'Valley'))
+addData('Tree', treeList, ('Station', 'Station'))
+addData('Harvest', harvestList, ('Tree', 'code'))
 
 
 con.commit()
