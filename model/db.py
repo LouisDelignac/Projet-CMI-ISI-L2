@@ -70,11 +70,11 @@ def addData(table, dataList, foreignKey = 'None'):
     with open('model/data.csv', 'r') as csvfile:
         reader = csv.DictReader(csvfile, delimiter=';')
 
-        for row in reader:
+        for row in reader: # reads the csv line by line
             query = 'SELECT (ID) FROM ' + table + ' WHERE ' + dataList[0] + '="{}";'.format(row[dataList[0]])
             result = cur.execute(query)
 
-            if result.fetchone() == None:
+            if result.fetchone() == None: # checks if the element is not already inserted
                 newElement = []
                 columnElement = ''
                 for column in dataList:
@@ -83,7 +83,7 @@ def addData(table, dataList, foreignKey = 'None'):
                     if column != dataList[-1]:
                         columnElement = columnElement + ','
                 
-                if foreignKey != 'None':
+                if foreignKey != 'None': # checks if the table has a column "Foreign Key"
                     query = 'SELECT ID FROM ' + foreignKey[0] + ' WHERE ' + foreignKey[1] + ' = "{}"'.format(row[foreignKey[1]])
                     fkID = cur.execute(query)
                     newElement.append(fkID.fetchone()[0])
@@ -91,7 +91,7 @@ def addData(table, dataList, foreignKey = 'None'):
                  
                 qMark = '?,' * (len(newElement)-1) + '?'
                 query = 'INSERT INTO ' + table + ' (' + columnElement + ') VALUES (' + qMark + ');'
-                cur.execute(query, newElement)
+                cur.execute(query, newElement) #inserts the element
                 
 
 
