@@ -23,5 +23,19 @@ Ensuite, nous avons un diagramme en rayon de soleil et un pie_chart qui se resse
 Si on regarde le diagramme en rayon de soleil, on peut voir facilement grâce au découpage du graphe l'ensemble des Ntots d'une station dans une vallée à l'année souhaitée.
 Pour accéder à cette valeur, il suffit de glisser la souris sur la partie 
 
+
+La base de données est créé par le fichier "db.py" à partir d'un fichier csv.
+
+Le fichier "db.py" va tout d'abord importer les bibliotèques et framework dont il a besoin.
+Il va ensuite se connecter à la base de données "database.db".
+Grâce à la fonction "execute" qui permet d'exécuter du code SQLite, on va créer 4 tables : "Valley", "Station", "Tree" et "Harvest".
+
+La fonction "addData" va quant à elle permettre d'ajouter les données.
+Cette fonction va remplir la table passée en paramètre à partir des données d'un fichier csv.
+L'argument "dataList" indique les colonnes à sélectionner dans le fichier csv.
+L'argument "ForeinKey" est facultatif.
+Dans un premier temps elle vérifie si l'élément n'est pas déjà inséré, auquel cas elle ne fait rien.
+Dans un second temps, elle récupère les données du csv ligne par ligne et les insère dans la table passée en argument.
+
 </body>
 </html>
