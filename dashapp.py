@@ -39,8 +39,7 @@ sidebar = html.Div(
 				dbc.NavLink("Histogramme", href="/", active="exact"),
                 dbc.NavLink("Dispersion", href="/scatter-plot", active="exact"),
                 dbc.NavLink("Diagramme en rayons de soleil", href="/sunburst-chart", active="exact"),
-                dbc.NavLink("Pie-chart", href="/pie", active="exact"),
-                dbc.NavLink("Graphique", href="/graph", active="exact"),
+                dbc.NavLink("Pie-chart & Graphique", href="/pie_graph", active="exact"),
 				dbc.NavLink("Tableur", href="/table", active="exact"),
 			],
 			vertical=True,
@@ -108,32 +107,20 @@ def render_page_content(pathname):
 				html.Div(id='data_table', children = view.GUI.data_table(model.data.df))
 			]
 
-	elif pathname == "/pie":
+	elif pathname == "/pie_graph":
 		# fetch client info"
 		dropdown = view.GUI.build_dropdown_menu(model.data.get_unique_values()) #on appelle le dropdown
-		graph = view.GUI.init_graph2() #on appelle le graph
+		graph1 = view.GUI.init_graph2() #on appelle le 1er graph
+		graph2 = view.GUI.init_graph3() #on appelle le 2ème graph
 		return [
-                html.H1('Relation entre la masse et les stations', id='pie_view',
+                html.H1('Relation entre la masse et les stations et Relation entre la masse et le nombre des glands', id='pie_graph_view',
                         style={'textAlign':'left'}),
                 html.Hr(style={'width': '75%', 'align': 'center'}),
-                html.Div([
-                    dropdown, graph #on fait apparaître le dropdown et le graphe dans cet ordre
-                        ])
-                ]
-    
-	elif pathname == "/graph":
-        #fetch clinet info
-		dropdown = view.GUI.build_dropdown_menu(model.data.get_unique_values()) #on appelle le dropdown
-		graph = view.GUI.init_graph3() #on appelle le graph
-		return [
-                html.H1('Relation entre la masse et le nombre des glands', id='scatter_view',
-                        style={'textAlign':'left'}),
-                html.Hr(style={'width': '75%', 'align': 'center'}),
-                html.Div([
-                    dropdown, graph #on fait apparaître le dropdown et le graphe dans cet ordre
-                        ])            
-                ]
-    
+				dropdown,
+				html.Div([
+                	graph1, graph2 #on fait apparaître le dropdown et les graphes
+                    	], style={'display': 'inline-flex'})
+                ]    
             
 	else:
 		return html.Div(
@@ -194,5 +181,4 @@ def update_scatter_chart(value):
 
 if __name__=='__main__':
 	app.run_server()
-
-               
+	
