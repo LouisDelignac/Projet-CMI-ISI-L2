@@ -17,10 +17,10 @@ cur.execute('''
 cur.execute('''
     CREATE TABLE IF NOT EXISTS Station (
     ID INTEGER PRIMARY KEY AUTOINCREMENT,
-    Station TEXT,
+    Station TEXT NOT NULL,
     Range INTEGER,
     Altitude INTEGER,
-    ValleyID INT,
+    ValleyID INT NOT NULL,
     FOREIGN KEY (ValleyID) REFERENCES Valley(ID)
     );
 ''')
@@ -64,18 +64,38 @@ def addData(table, dataList):
     with open('data.csv', 'r') as csvfile:
         reader = csv.DictReader(csvfile, delimiter=';')
         for row in reader:
-            query = 'SELECT (ID) FROM ' + table + ' WHERE ' + dataList[0] + '="{}";'.format(row[table])
+            query = 'SELECT (ID) FROM ' + table + ' WHERE ' + dataList[0] + '="{}";'.format(row[dataList[0]])
             result = cur.execute(query)
             if result.fetchone() == None:
+                newElement = []
+                ratio = ''
                 for column in dataList:
-                    query = 'INSERT INTO ' + table + ' (' + column + ') VALUES (?);'
-                    cur.execute(query, (row[column], ))
+                    newElement.append(row[column])
+                    ratio = ratio + column
+                    if column != dataList[-1]:
+                        ratio = ratio + ','
                 if table == 'Station':
                     query = 'SELECT ID FROM Valley WHERE Valley = "{}"'.format(row['Valley'])
                     test = cur.execute(query)
                     test2 = test.fetchone()
-                    query = 'INSERT INTO Station (ValleyID) VALUES ({});'.format(test2[0])
-                    cur.execute(query)
+                    newElement.append(test2[0])
+                    ratio = ratio + ',ValleyID'
+                elif table == 'Tree':
+                    query = 'SELECT ID FROM Station WHERE Station = "{}"'.format(row['Station'])
+                    test = cur.execute(query)
+                    test2 = test.fetchone()
+                    newElement.append(test2[0])
+                    ratio = ratio + ',StationID'
+                elif table == 'Harvest':
+                    query = 'SELECT ID FROM Tree WHERE code = "{}"'.format(row['code'])
+                    test = cur.execute(query)
+                    test2 = test.fetchone()
+                    newElement.append(test2[0])
+                    ratio = ratio + ',TreeID'
+                interro = '?,' * (len(newElement)-1) + '?'
+                query = 'INSERT INTO ' + table + ' (' + ratio + ') VALUES (' + interro + ');'
+                cur.execute(query, newElement)
+                
 
 
 valleyList = ['Valley']
@@ -86,7 +106,7 @@ harvestList = ['ID', 'harv_num', 'DD', 'harv', 'Year', 'Date', 'Mtot', 'Ntot', '
 
 addData('Valley', valleyList)
 addData('Station', stationList)
-#addData('Tree', treeList)
+addData('Tree', treeList)
 #addData('Harvest', harvestList)
 
 
