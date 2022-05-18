@@ -91,7 +91,7 @@ def addData(table, dataList, foreignKey = 'None'):
                  
                 qMark = '?,' * (len(newElement)-1) + '?'
                 query = 'INSERT INTO ' + table + ' (' + columnElement + ') VALUES (' + qMark + ');'
-                cur.execute(query, newElement) #inserts the element
+                cur.execute(query, newElement) # inserts the element
                 
 
 
