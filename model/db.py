@@ -3,7 +3,7 @@ import pandas as pd
 import csv
 
 
-con = sqlite3.connect('database.db')
+con = sqlite3.connect('model/database.db')
 cur = con.cursor()
 
 
@@ -67,7 +67,7 @@ def addData(table, dataList, foreignKey = 'None'):
     - the datalist indicates which columns to select in the csv file
     - the foreign key is optional
     """
-    with open('data.csv', 'r') as csvfile:
+    with open('model/data.csv', 'r') as csvfile:
         reader = csv.DictReader(csvfile, delimiter=';')
 
         for row in reader:
