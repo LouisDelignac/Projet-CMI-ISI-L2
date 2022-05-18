@@ -1,4 +1,9 @@
 import pandas as pd
+import sqlite3
+
+#con = sqlite3.connect('model/database.db')
+#cur = con.cursor()
+#df = pd.read_sql(sql, con, index_col=None, coerce_float=True, params=None, parse_dates=None, columns=None, chunksize=None) #SQL query to be executed or a table name
 
 df = pd.read_csv('model/data.csv', sep=';')
 select_column = 'Valley'
